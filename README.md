@@ -1,12 +1,10 @@
-# Tic-Tac-Toe Game
+web-based tic-tac-toe game.
 
-Simple web-based tic-tac-toe game built with Flask.
-
-## How to Run
+## How to Run my game
 
 ```bash
 source venv/bin/activate
 python app.py
 ```
 
-Open your browser and go to: `http://localhost:8080` 
+Open browser and go to: `http://localhost:8080` 

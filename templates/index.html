@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Tic-Tac-Toe Game</title>
     <style>
-        /* Basic styling for our game */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f8becd; /* Pink background as requested */
+            background-color: #f8becd;
             text-align: center;
             padding: 20px;
             margin: 0;
@@ -19,25 +18,22 @@
             margin-bottom: 20px;
         }
 
-        /* The game container */
         .game-container {
             max-width: 400px;
             margin: 0 auto;
         }
 
-        /* The 3x3 grid for our tic-tac-toe board */
         .game-board {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
-            grid-template-rows: repeat(3, 1fr);    /* 3 equal rows */
-            gap: 5px; /* Space between grid squares */
-            background-color: #846c94; /* Purple grid color as requested */
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 5px;
+            background-color: #846c94;
             padding: 10px;
             border-radius: 10px;
             margin: 20px 0;
         }
 
-        /* Each square in our grid */
         .game-square {
             width: 100px;
             height: 100px;
@@ -48,27 +44,23 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.3s; /* Smooth hover effect */
+            transition: background-color 0.3s;
         }
 
-        /* When hovering over empty squares */
         .game-square:hover:not(.taken) {
             background-color: #f0f0f0;
         }
 
-        /* Style for squares that are already taken */
         .game-square.taken {
             cursor: not-allowed;
         }
 
-        /* Style for our character images */
         .game-square img {
             width: 70px;
             height: 70px;
-            object-fit: contain; /* Keep image proportions */
+            object-fit: contain;
         }
 
-        /* Reset button styling */
         .reset-button {
             background-color: #846c94;
             color: white;
@@ -85,7 +77,6 @@
             background-color: #6d5a7a;
         }
 
-        /* Game status messages */
         .game-status {
             font-size: 20px;
             font-weight: bold;
@@ -93,17 +84,14 @@
             color: #333;
         }
 
-        /* Winner message */
         .winner {
             color: #4CAF50;
         }
 
-        /* Tie message */
         .tie {
             color: #FF9800;
         }
 
-        /* Current player message */
         .current-turn {
             color: #2196F3;
         }
@@ -111,14 +99,11 @@
 </head>
 <body>
     <div class="game-container">
-        <!-- Game status display -->
         <div id="gameStatus" class="game-status current-turn">
             Chrome's turn (X)
         </div>
 
-        <!-- The 3x3 game board -->
         <div class="game-board">
-            <!-- We create 9 squares numbered 0-8 -->
             <button class="game-square" onclick="makeMove(0)" id="square0"></button>
             <button class="game-square" onclick="makeMove(1)" id="square1"></button>
             <button class="game-square" onclick="makeMove(2)" id="square2"></button>
@@ -130,16 +115,11 @@
             <button class="game-square" onclick="makeMove(8)" id="square8"></button>
         </div>
 
-        <!-- Reset button -->
         <button class="reset-button" onclick="resetGame()">Reset Game</button>
     </div>
 
     <script>
-        // JavaScript code to make our game interactive
-        
-        // Function called when a player clicks a square
         function makeMove(position) {
-            // Send the move to our Python server
             fetch('/make_move', {
                 method: 'POST',
                 headers: {
@@ -147,12 +127,12 @@
                 },
                 body: JSON.stringify({position: position})
             })
-            .then(response => response.json())  // Convert response to JSON
+            .then(response => response.json())
             .then(data => {
                 if (data.error) {
-                    alert(data.error);  // Show error if square is taken
+                    alert(data.error);
                 } else {
-                    updateBoard(data);  // Update the game board
+                    updateBoard(data);
                 }
             })
             .catch(error => {
@@ -160,7 +140,6 @@
             });
         }
 
-        // Function to reset the game
         function resetGame() {
             fetch('/reset', {
                 method: 'POST',
@@ -170,36 +149,32 @@
             })
             .then(response => response.json())
             .then(data => {
-                updateBoard(data);  // Update the board with fresh game
+                updateBoard(data);
             })
             .catch(error => {
                 console.error('Error:', error);
             });
         }
 
-        // Function to update the visual board based on game state
         function updateBoard(gameData) {
-            // Update each square on the board
+            // update squares
             for (let i = 0; i < 9; i++) {
                 const square = document.getElementById(`square${i}`);
                 const player = gameData.board[i];
                 
                 if (player === 'X') {
-                    // Chrome image for X
                     square.innerHTML = '<img src="/static/images/download-removebg-preview.png" alt="Chrome">';
                     square.classList.add('taken');
                 } else if (player === 'O') {
-                    // Melody (Kuromi) image for O  
                     square.innerHTML = '<img src="/static/images/Kuromi-removebg-preview.png" alt="Melody">';
                     square.classList.add('taken');
                 } else {
-                    // Empty square
                     square.innerHTML = '';
                     square.classList.remove('taken');
                 }
             }
 
-            // Update game status message
+            // update status
             const statusDiv = document.getElementById('gameStatus');
             
             if (gameData.winner) {
@@ -216,7 +191,7 @@
             }
         }
 
-        // Load the initial game state when page loads
+        // load game when page loads
         window.onload = function() {
             fetch('/game_state')
                 .then(response => response.json())
